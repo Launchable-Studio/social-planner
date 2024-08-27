@@ -24,6 +24,7 @@ import {
   ArrowRightIcon,
   GalleryHorizontal,
   SidebarIcon,
+  PlusIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import FeedLibrary from "./FeedLibrary";
@@ -43,6 +44,24 @@ function InstagramPost({
   if (!child) {
     return null;
   }
+
+  const aspectRatio = child.width / child.height;
+  const maxWidth = 500; // Maximum width of the card
+  const maxHeight = 500; // Maximum height of the image container
+
+  let imageWidth, imageHeight;
+
+  if (aspectRatio > 1) {
+    // Landscape image
+    imageWidth = Math.min(child.width, maxWidth);
+    imageHeight = imageWidth / aspectRatio;
+  } else {
+    // Portrait or square image
+    imageHeight = Math.min(child.height, maxHeight);
+    imageWidth = imageHeight * aspectRatio;
+  }
+
+  const isWideImage = aspectRatio > 4 / 2.5;
 
   return (
     <Card className="w-full max-w-sm">
@@ -85,14 +104,19 @@ function InstagramPost({
         </DropdownMenu>
       </CardHeader>
       <CardContent className="p-0">
-        <div className="relative">
+        <div
+          className="relative flex justify-center items-center"
+          style={{ height: `${maxHeight}px` }}
+        >
           <Image
             src={child.url}
             alt={child.fileName}
-            className="aspect-[4/5] object-cover"
-            height={400}
-            width={400}
+            className="object-contain"
+            width={imageWidth}
+            height={imageHeight}
+            style={{ width: `${imageWidth}px`, height: `${imageHeight}px` }}
           />
+
           {isCarousel && (
             <div className="absolute inset-0 flex items-center justify-between opacity-0 hover:opacity-100">
               <div className="absolute inset-0 flex items-center justify-between p-2">
@@ -252,16 +276,26 @@ export default function Post({ params }) {
         <main className="flex justify-center items-center h-[calc(100vh-64px)]">
           {isSideBySide ? (
             <div className="flex justify-center flex-row w-full overflow-x-scroll">
-              {item.children.map((child) => (
-                <Image
-                  key={child.id}
-                  src={child.url}
-                  alt={child.fileName}
-                  className="aspect-[4/5] object-cover"
-                  height={400}
-                  width={400}
-                />
-              ))}
+              {item.children.map((child) => {
+                const aspectRatio = child.width / child.height;
+                const imageHeight = 500;
+                const imageWidth = Math.round(imageHeight * aspectRatio);
+
+                return (
+                  <Image
+                    key={child.id}
+                    src={child.url}
+                    alt={child.fileName}
+                    className="object-contain"
+                    height={imageHeight}
+                    width={imageWidth}
+                    style={{
+                      height: `${imageHeight}px`,
+                      width: `${imageWidth}px`,
+                    }}
+                  />
+                );
+              })}
             </div>
           ) : (
             <InstagramPost

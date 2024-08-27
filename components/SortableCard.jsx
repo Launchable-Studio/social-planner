@@ -7,7 +7,8 @@ import { Card } from "@/components/ui/card";
 
 const SortableCard = ({ item, onDelete }) => {
   const uniqueId = item.id;
-  const element = item.children ? item.children[0] : item;
+  const elements = item.children || [item];
+  // const element = item.children ? item.children[0] : item;
 
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: uniqueId });
@@ -28,14 +29,18 @@ const SortableCard = ({ item, onDelete }) => {
       <Card className="p-4 relative flex justify-between gap-2 group">
         <div className="flex items-center justify-between space-x-4 w-full">
           <div className="flex items-center space-x-4 overflow-hidden">
-            <Image
-              alt={element.fileName}
-              className="aspect-square object-cover"
-              height={100}
-              key={element.fileName}
-              src={element.url}
-              width={100}
-            />
+            <div className="flex flex-row gap-2 overflow-y-auto">
+              {elements?.map((element) => (
+                <Image
+                  alt={element.fileName}
+                  className="aspect-square object-cover"
+                  height={100}
+                  key={element.fileName}
+                  src={element.url}
+                  width={100}
+                />
+              ))}
+            </div>
             <div className="overflow-hidden">
               <p className="truncate text-ellipsis whitespace-nowrap">
                 {item.caption}

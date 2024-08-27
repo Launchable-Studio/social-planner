@@ -96,6 +96,8 @@ export default function FeedLibrary({ projectSlug }) {
           fileName: image.fileName,
           url: image.url,
           position: 1,
+          height: image.height,
+          width: image.width,
         },
       ],
     };

@@ -113,6 +113,8 @@ export default function FeedLibrary({ id, projectSlug }) {
       fileName: image.fileName,
       url: image.url,
       position: item.children.length + 1,
+      width: image.width,
+      height: image.height,
     };
 
     const updatedItem = {
